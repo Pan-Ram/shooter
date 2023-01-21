@@ -14,11 +14,14 @@ WIN_HEIGHT = 500
 window = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 clock = pygame.time.Clock()
 
-background = pygame.image.load(file_path("galaxy.jpg"))
+background = pygame.image.load(file_path("background.png"))
 background = pygame.transform.scale(background, (WIN_WIDTH, WIN_HEIGHT))
 play = True
 game = True
 
+background_music = pygame.mixer.music.load(file_path("music.wav"))
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(-1)
 while game == True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
