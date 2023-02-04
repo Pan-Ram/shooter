@@ -1,5 +1,6 @@
 import pygame
 import os
+from random import randint
 pygame.init()
 
 def file_path(file_name):
@@ -42,7 +43,21 @@ class Player(GameSprite):
     def fire(self):
         pass
 
+class Enemy(GameSprite):
+    def __init__(self, image, x, y, speed, width, height):
+        super().__init__(image, x, y, speed, width, height)
+    
+    def update(self):
+        self.rect.y += self.speed
+        if self.rect.y >= WIN_HEIGHT:
+            self.rect.bottom = 0
+            self.rect.x = randint(0, WIN_WIDTH - self.rect.width)
+
 player = Player("dog.png", 300, 375, 5, 65, 65)
+enemies = pygame.sprite.Group()
+for i in range(5):
+    enemy = Enemy(file_path("enemy.png"), randint(0, WIN_WIDTH - 50), 0, 2, 65, 50)
+    enemies.add(enemy)
 
 play = True
 game = True
@@ -60,6 +75,10 @@ while game == True:
 
         player.reset()
         player.update()
+
+        enemies.draw(window)
+        enemies.update()
+
 
     clock.tick(FPS)
     pygame.display.update()
