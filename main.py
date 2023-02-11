@@ -45,6 +45,8 @@ class Player(GameSprite):
     def fire(self):
         bullet = Bullet(file_path("bullet.png"), self.rect.centerx, self.rect.top, 5, 20, 20)
         bullets.add(bullet)
+        
+        shoot_sound.play()
 
 class Bullet(GameSprite):
     def __init__(self, image, x, y, speed, width, height):
@@ -63,6 +65,8 @@ class Enemy(GameSprite):
         global missed_enemies
         self.rect.y += self.speed
         if self.rect.y >= WIN_HEIGHT:
+            
+            enemy_passed_sound.play()
             self.rect.bottom = 0
             self.rect.x = randint(0, WIN_WIDTH - self.rect.width)
             self.speed = randint(1, 4)
@@ -88,6 +92,12 @@ game = True
 background_music = pygame.mixer.music.load(file_path("music.wav"))
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
+
+shoot_sound = pygame.mixer.Sound(file_path("shoot_sound.wav"))
+enemy_killed_sound = pygame.mixer.Sound(file_path("enemy_death_sound.wav"))
+lose_sound  = pygame.mixer.Sound(file_path("fail_music.wav"))
+win_sound  = pygame.mixer.Sound(file_path("win_music.wav"))
+enemy_passed_sound = pygame.mixer.Sound(file_path("enemy_trought_sound.wav"))
 while game == True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -112,6 +122,8 @@ while game == True:
 
         collide_bullets = pygame.sprite.groupcollide(enemies ,bullets, False, True)
         if collide_bullets:
+             
+            enemy_killed_sound.play()
             for enemy in collide_bullets:
                 killed_enemies += 1
             
@@ -120,10 +132,14 @@ while game == True:
                 enemy.speed = randint(1, 4)
 
         if missed_enemies >= 5 or pygame.sprite.spritecollide(player, enemies, False):
+            
+            lose_sound.play()
             txt_lose = font2.render("You lost", True, RED)
             window.blit(txt_lose, (150, 200))
             play = False
-        if killed_enemies >= 2:
+        if killed_enemies >= 20:
+            
+            win_sound.play()
             txt_win = font2.render("You won", True, GREEN)
             window.blit(txt_win, (150, 200))
             play = False
